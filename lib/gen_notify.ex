@@ -8,15 +8,18 @@ defmodule GenNotify do
     GenNotify.Notifier.send_notification(message)
   end
 
+  @doc false
   def send_message(target, message) when is_pid(target) do
     GenServer.cast(target, {:on_message, message})
   end
 
+  @doc false
   def send_message(target, message) when is_atom(target) do
     target.on_message(message)
   end
 
 
+  @doc false
   defmacro __using__(opts) do
     case opts[:server] do
       true -> make_server()
