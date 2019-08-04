@@ -47,7 +47,12 @@ defmodule GenNotify.Notifier do
   end
 
   def handle_call({:add_recipient, recipient}, _from, state) do
-    new_state = %{state | recipients: [recipient | state.recipients]}
+    new_state = state |> _add_recipient(recipient)
     {:reply, :ok, new_state}
+  end
+
+  defp _add_recipient(state, recipient) do
+    recipients = [recipient | state.recipients] |> Enum.uniq 
+    %{state | recipients: recipients}
   end
 end
