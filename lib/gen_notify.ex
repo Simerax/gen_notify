@@ -74,7 +74,7 @@ defmodule GenNotify do
 
   @doc false
   def send_message(target, message) when is_atom(target) do
-    target.on_message(message)
+    spawn( fn -> target.on_message(message) end )
   end
 
 
