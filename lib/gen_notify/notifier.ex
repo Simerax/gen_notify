@@ -44,16 +44,17 @@ defmodule GenNotify.Notifier do
   @doc """
   returns what `GenServer.start_link` does
   """
+  def start_link(_), do: start_link()
   def start_link() do
     GenServer.start_link(@name, :ok, name: @name)
   end
 
-  @doc false
+  @impl true
   def init(_) do
     {:ok, %{recipients: []}}
   end
 
-  @doc false
+  @impl true
   def handle_cast({:send_notification, message}, state) do
     state |> send_notifications(message)
     {:noreply, state}
@@ -64,7 +65,7 @@ defmodule GenNotify.Notifier do
     state.recipients |> Enum.each(&(GenNotify.send_message(&1, message)))
   end
 
-  @doc false
+  @impl true
   def handle_call({:add_recipient, recipient}, _from, state) do
     new_state = state |> _add_recipient(recipient)
     {:reply, :ok, new_state}

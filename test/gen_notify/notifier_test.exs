@@ -20,6 +20,5 @@ defmodule GenNotify.Notifier.Test do
     assert GenNotify.Notifier.send_notification("Test") == :ok
 
     Process.sleep(100)
-
   end
 end

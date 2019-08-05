@@ -1,21 +1,42 @@
 # GenNotify
 
-**TODO: Add description**
+## What is GenNotify
+
+You can basically think of it as some kind of broadcast/multicast module.
+It's for forwarding Messages to everyone who is in the list of recipients.
+[docs](https://hexdocs.pm/gen_notify/GenNotify.html#content)
+
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `gen_notify` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:gen_notify, "~> 0.1.0"}
+    {:gen_notify, "~> 0.2.0"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/gen_notify](https://hexdocs.pm/gen_notify).
+```elixir
+
+defmodule MyNotification do
+  use GenNotify
+
+  on_message(msg) do
+    IO.puts("Got the message: #{msg}")
+  end
+end
+
+
+# Start the service
+GenNotify.Supervisor.start_link()
+
+# add Module to recipients
+MyNotification.gen_notify_init()
+
+# send a notification
+GenNotify.send_notification("I'm a message") # => will call MyNotification.on_message/1
+
+```
+
 
