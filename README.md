@@ -22,7 +22,7 @@ end
 defmodule MyNotification do
   use GenNotify
 
-  on_message(msg) do
+  def on_message(msg) do
     IO.puts("Got the message: #{msg}")
   end
 end
