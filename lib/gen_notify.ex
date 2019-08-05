@@ -1,11 +1,14 @@
 defmodule GenNotify do
   @type msg :: any
+  @type state :: any
   @type recipient :: atom | pid
 
   @doc """
   callback which will be invoked when a notification is sent via `GenNotify.Notifier.send_notification/1`
+  In case you `use GenNotify, gen_server: true` then `on_message/2` will be called.
   """
   @callback on_message(msg) :: any
+  @callback on_message(msg, state) :: state
 
 
   @moduledoc """
@@ -22,9 +25,12 @@ defmodule GenNotify do
       defmodule MyNotification do
         use GenNotify
   
-        def on_message(msg) do
+        def on_message(msg) when is_binary(msg) do
           IO.puts("I got a message: #\{msg}")
         end
+
+        # we ignore all other kinds of messages
+        def on_message(_msg), do: nil
       end
 
   To get up and running we do need to make sure that our Notifier is started.
@@ -48,7 +54,7 @@ defmodule GenNotify do
 
       defmodule MyGenServer do
         use GenServer
-        use GenNotify, server: true # we need to tell GenNotify that this is indeed is a server
+        use GenNotify, gen_server: true # we need to tell GenNotify that this is indeed is a server
 
         def start_link(_) do
           GenServer.start_link(__MODULE__, :ok)
@@ -56,12 +62,17 @@ defmodule GenNotify do
 
         def init(_) do
           gen_notify_init() # => This will supply our PID to GenNotify.Notifier (Keep in mind, GenNotify.Notifier already needs to be alive!)
-          {:ok, %{}}
+          {:ok, %{messages: 0}}
         end
 
-        def on_message(msg) do
-          IO.puts(msg) # => will be "im a message" in our example
+        def on_message(msg, state) when is_binary(msg) do
+          new_state = %{state | messages: state.messages + 1}
+          IO.puts("#\{msg} is my #\{new_state.messages} message!") # => will be "im a message is my X message!" in our example
+          new_state
         end
+
+        # we ignore all other kinds of messages
+        def on_message(_msg, state), do: state
       end
   
   somewhere else in the code...
@@ -88,7 +99,7 @@ defmodule GenNotify do
 
   @doc false
   defmacro __using__(opts) do
-    case opts[:server] do
+    case opts[:gen_server] do
       true -> make_server()
       _ ->  make_default()
     end
@@ -111,8 +122,8 @@ defmodule GenNotify do
       end
 
       def handle_cast({:gen_notify_on_message, message}, state) do
-        on_message(message)
-        {:noreply, state}
+        new_state = on_message(message, state)
+        {:noreply, new_state}
       end
     end
   end
