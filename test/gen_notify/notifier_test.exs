@@ -19,6 +19,8 @@ defmodule GenNotify.Notifier.Test do
     assert GenNotify.Notifier.add_recipient(GenNotify.Mock) == :ok
     assert GenNotify.Notifier.send_notification("Test") == :ok
 
+    # We sleep to make sure that the Notifier has enough time to call the on_message/1 function
+    # otherwise mox will think we failed a test because :on_message wasn't called
     Process.sleep(100)
   end
 end
