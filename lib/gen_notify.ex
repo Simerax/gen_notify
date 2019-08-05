@@ -1,6 +1,10 @@
 defmodule GenNotify do
   @type msg :: any
   @type recipient :: atom | pid
+
+  @doc """
+  callback which will be invoked when a notification is sent via `GenNotify.Notifier.send_notification/1`
+  """
   @callback on_message(msg) :: any
 
 
@@ -8,6 +12,10 @@ defmodule GenNotify do
   This is the main module that you will come in contact with.
 
   you can `use` this module to inherit its functionality.
+
+  ## What is GenNotify
+  You can basically think of it as some kind of broadcast/multicast module.
+  It's for forwarding Messages to everyone who is in the list of recipients.
 
   ## Example
 
