@@ -12,7 +12,7 @@ It's for forwarding Messages to everyone who is in the list of recipients.
 ```elixir
 def deps do
   [
-    {:gen_notify, "~> 0.3.0"}
+    {:gen_notify, "~> 0.3.1"}
   ]
 end
 ```
