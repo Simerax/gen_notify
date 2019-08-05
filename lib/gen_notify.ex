@@ -33,14 +33,22 @@ defmodule GenNotify do
         def on_message(_msg), do: nil
       end
 
-  To get up and running we do need to make sure that our Notifier is started.
+  To get up and running we need to make sure that our Notification Service is started.
 
-      GenNotify.Notifier.start_link()
+      # lets add our Custom Notification to the list of recipients
+      config = [
+        recipients: [
+          MyNotification
+        ]
+      ]
+      GenNotify.Supervisor.start_link(config)
 
-  Our Custom Notification has to be initialized at some point after `GenNotify.Notifier`.
-  This will tell the Notifier to watch this Module
 
+  If you dont want a Notification to be added to the recipients right away you can start the Service without any recipients and add them later by hand
+      GenNotify.Supervisor.start_link()
       MyNotification.gen_notify_init()
+
+
 
   somewhere else in the code...
 
@@ -54,21 +62,23 @@ defmodule GenNotify do
 
       defmodule MyGenServer do
         use GenServer
-        use GenNotify, gen_server: true # we need to tell GenNotify that this is indeed is a server
+        use GenNotify, gen_server: true # we need to tell GenNotify that this is indeed is a GenServer
 
         def start_link(_) do
           GenServer.start_link(__MODULE__, :ok)
         end
 
         def init(_) do
-          gen_notify_init() # => This will supply our PID to GenNotify.Notifier (Keep in mind, GenNotify.Notifier already needs to be alive!)
+          gen_notify_init() # => This will supply our PID to GenNotify.Notifier (Keep in mind, GenNotify.Supervisor already needs to be alive!)
           {:ok, %{messages: 0}}
         end
 
         def on_message(msg, state) when is_binary(msg) do
           new_state = %{state | messages: state.messages + 1}
           IO.puts("#\{msg} is my #\{new_state.messages} message!") # => will be "im a message is my X message!" in our example
-          new_state
+
+          # Give the updated state back to the GenServer
+          new_state 
         end
 
         # we ignore all other kinds of messages

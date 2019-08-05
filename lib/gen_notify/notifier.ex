@@ -44,14 +44,18 @@ defmodule GenNotify.Notifier do
   @doc """
   returns what `GenServer.start_link` does
   """
-  def start_link(_), do: start_link()
-  def start_link() do
-    GenServer.start_link(@name, :ok, name: @name)
+
+  def start_link(config \\ []) do
+    GenServer.start_link(@name, config, name: @name)
   end
 
   @impl true
-  def init(_) do
-    {:ok, %{recipients: []}}
+  def init(config) do
+    initial_recipients = case config[:recipients] do
+      nil -> []
+      r -> r
+    end
+    {:ok, %{recipients: initial_recipients}}
   end
 
   @impl true

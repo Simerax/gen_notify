@@ -6,14 +6,14 @@ defmodule GenNotify.Supervisor do
 
   @name __MODULE__
 
-  def start_link(arg \\ nil) do
-    Supervisor.start_link(@name, arg, name: @name)
+  def start_link(config \\ []) do
+    Supervisor.start_link(@name, config, name: @name)
   end
 
   @impl true
-  def init(_arg) do
+  def init(config) do
     children = [
-      {GenNotify.Notifier, []}
+      {GenNotify.Notifier, [recipients: config[:recipients]]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
