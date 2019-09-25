@@ -4,7 +4,7 @@ defmodule GenNotify.MixProject do
   def project do
     [
       app: :gen_notify,
-      version: "0.3.1",
+      version: "0.4.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -18,6 +18,7 @@ defmodule GenNotify.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {GenNotify.Application,[]},
       extra_applications: [:logger]
     ]
   end

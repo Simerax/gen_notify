@@ -9,8 +9,7 @@ defmodule GenNotify.Notifier do
 
   ## Do I even need to know about this?
   
-  You will not need to interact with this Module directly except for starting it via `GenNotify.Notifier.start_link/0`.
-  Even this will not be needed if you use the `GenNotify.Supervisor`.
+  You will not need to interact with this Module directly. This Module is automatically started by `GenNotify.Supervisor` which itself is started by `GenNotify.Application`.
 
   The only exception is if you want to implement your own Module with the `GenNotify` Behaviour (not `use GenNotify`!)
   """

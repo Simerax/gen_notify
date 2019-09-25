@@ -12,7 +12,7 @@ It's for forwarding Messages to everyone who is in the list of recipients.
 ```elixir
 def deps do
   [
-    {:gen_notify, "~> 0.3.1"}
+    {:gen_notify, "~> 0.4.0"}
   ]
 end
 ```
@@ -26,10 +26,6 @@ defmodule MyNotification do
     IO.puts("Got the message: #{msg}")
   end
 end
-
-
-# Start the service
-GenNotify.Supervisor.start_link()
 
 # add Module to recipients
 MyNotification.gen_notify_init()

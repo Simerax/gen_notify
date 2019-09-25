@@ -20,6 +20,13 @@ defmodule GenNotify do
   You can basically think of it as some kind of broadcast/multicast module.
   It's for forwarding Messages to everyone who is in the list of recipients.
 
+
+  ## A small Warning
+  Please be aware that this module can cause a lot of harm if misused. 
+  Sending a lot of Notifications to all kinds of recipients can make the your System very messy and it will be very annoying to debug.
+
+  **TL;DR Do yourself and your colleagues a favor: Don't use this extensively!**
+
   ## Example
 
       defmodule MyNotification do
@@ -32,22 +39,6 @@ defmodule GenNotify do
         # we ignore all other kinds of messages
         def on_message(_msg), do: nil
       end
-
-  To get up and running we need to make sure that our Notification Service is started.
-
-      # lets add our Custom Notification to the list of recipients
-      config = [
-        recipients: [
-          MyNotification
-        ]
-      ]
-      GenNotify.Supervisor.start_link(config)
-
-
-  If you dont want a Notification to be added to the recipients right away you can start the Service without any recipients and add them later by hand
-      GenNotify.Supervisor.start_link()
-      MyNotification.gen_notify_init()
-
 
 
   somewhere else in the code...
